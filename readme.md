@@ -43,7 +43,7 @@ var fakeWorker = new Worker('non-existing-worker.js');
 
 If you don't want to install it globally, __worker-inlinify__ is also available from npm scripts, you can define it in a custom script like below in your __package.json__.
 
-```
+```json
 {
   "scripts": {
     "inlinify": "worker-inlinify"
@@ -55,7 +55,7 @@ And  `npm run inlinify` will do the same trick.
 
 ### --loose
 If you have the following code snippet, you would get an error: __SyntaxError: Identifier 'a' has already been declared (3:4)__ when running `worker-inlinify`. This is because __worker-inlinify__ uses [Acorn](https://github.com/acornjs/acorn) as the JavaScript parser to parse your JS code and [Acorn](https://github.com/acornjs/acorn) will raise a `SyntaxError` object when encountering a syntax error. 
-```
+```javascript
 var worker = new Worker('src/worker.js');
 let a = 'a';
 let a = 'a';
