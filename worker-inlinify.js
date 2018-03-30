@@ -32,7 +32,7 @@ var ReplaceNode = /** @class */ (function () {
     return ReplaceNode;
 }());
 var workerInlinify = {
-    contextPath: path.resolve(__dirname),
+    contextPath: path.resolve(process.cwd()),
     useLoose: false,
     findWorkerRefs: function (source) {
         var ast = this.useLoose ? acornLoose.parse_dammit(source) : acorn.parse(source);

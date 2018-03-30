@@ -41,7 +41,7 @@ class ReplaceNode {
 }
 
 const workerInlinify = {
-    contextPath: path.resolve(__dirname),
+    contextPath: path.resolve(process.cwd()),
 
     useLoose: false,
 
