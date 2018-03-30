@@ -1,0 +1,34 @@
+{
+  "name": "worker-inlinify",
+  "version": "1.0.0",
+  "description": "worker-inlinify transforms separate web worker script reference into inline script so there is no need to carry/deploy additional worker script file.",
+  "main": "worker-inlinify.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha --require intelli-espower-loader"
+  },
+  "keywords": [
+    "web",
+    "worker",
+    "inline",
+    "blob",
+    "script",
+    "inlinify"
+  ],
+  "author": "Sheng Jiang",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^9.4.7",
+    "chai": "^4.1.2",
+    "intelli-espower-loader": "^1.0.1",
+    "mocha": "^5.0.5",
+    "power-assert": "^1.4.4"
+  },
+  "dependencies": {
+    "acorn": "^5.5.3",
+    "text2jsvar": "^1.2.1"
+  },
+  "bin": {
+    "worker-inlinify": "./bin/cli.js"
+  }
+}

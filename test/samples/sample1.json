@@ -1,0 +1,17 @@
+{
+    "workerRefs": [
+        {
+            "worker": "worker.js",
+            "refs": [
+                {
+                    "start": 19,
+                    "end": 30
+                },
+                {
+                    "start": 136,
+                    "end": 187
+                }
+            ]
+        }
+    ]
+}

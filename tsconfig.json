@@ -1,0 +1,11 @@
+{
+    "files": [
+        "worker-inlinify.ts"
+    ],
+    "compilerOptions": {
+        "lib": [
+            "scripthost",
+            "es5"
+        ]
+    }
+}

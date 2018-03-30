@@ -1,0 +1,1 @@
+var a = new Worker('worker/worker.js');

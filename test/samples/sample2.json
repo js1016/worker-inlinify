@@ -1,0 +1,35 @@
+{
+    "workerRefs": [
+        {
+            "worker": "worker.js",
+            "refs": [
+                {
+                    "start": 19,
+                    "end": 30
+                },
+                {
+                    "start": 79,
+                    "end": 90
+                }
+            ]
+        },
+        {
+            "worker": "non-existing-worker.js",
+            "refs": [
+                {
+                    "start": 116,
+                    "end": 140
+                }
+            ]
+        },
+        {
+            "worker": "worker2.js",
+            "refs": [
+                {
+                    "start": 163,
+                    "end": 175
+                }
+            ]
+        }
+    ]
+}
