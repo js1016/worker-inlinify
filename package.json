@@ -1,6 +1,6 @@
 {
   "name": "worker-inlinify",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "worker-inlinify transforms separate web worker script reference into inline script so there is no need to carry/deploy additional worker script file.",
   "main": "worker-inlinify.js",
   "scripts": {
