@@ -10,5 +10,5 @@
             ]
         }
     ],
-    "output": "var a = new Worker(window.URL.createObjectURL(new Blob([\"(function () {\\r\\n    alert(\\'Hi from Worker inside a folder!\\');\\r\\n})();\"])));"
+    "output": "var a = new Worker(window.URL.createObjectURL(new Blob([\"(function () {\\r\\n    console.log(\\'Hi from Worker inside a folder!\\');\\r\\n})();\"])));"
 }

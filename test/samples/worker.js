@@ -1,3 +1,3 @@
 (function () {
-    alert('Hi from Worker');
+    console.log('Hi from Worker');
 })();

@@ -5,7 +5,9 @@
   "main": "worker-inlinify.js",
   "scripts": {
     "build": "tsc",
-    "test": "mocha --require intelli-espower-loader"
+    "test": "mocha --require intelli-espower-loader",
+    "debug": "node debug.js",
+    "debug-brk": "node --inspect --debug-brk debug.js"
   },
   "keywords": [
     "web",

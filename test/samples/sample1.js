@@ -7,3 +7,4 @@ var f = new Worker();
 var g = new Worker(true);
 var h = new Worker(window.workerName);
 var i = new Woker2('worker.js');
+eval("var a = new Worker('worker.js');var b = new Worker('worker.js');eval(\"var a=new Worker('worker.js');var b=new Worker('worker.js');\")");

@@ -1,3 +1,3 @@
 (function () {
-    alert('Hi from Worker inside a folder!');
+    console.log('Hi from Worker inside a folder!');
 })();

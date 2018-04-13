@@ -31,6 +31,14 @@ var ReplaceNode = /** @class */ (function () {
     }
     return ReplaceNode;
 }());
+var EvalReplaceNode = /** @class */ (function () {
+    function EvalReplaceNode(start, end, replacement) {
+        this.start = start;
+        this.end = end;
+        this.replacement = text2jsvar.convert(replacement);
+    }
+    return EvalReplaceNode;
+}());
 var workerInlinify = {
     contextPath: path.resolve(process.cwd()),
     useLoose: false,
@@ -66,11 +74,43 @@ var workerInlinify = {
     },
     inlinify: function (source) {
         var _this = this;
+        // start inlinify contents in eval
+        var ast = this.useLoose ? acornLoose.parse_dammit(source) : acorn.parse(source);
+        var evalReplaceNodes = [];
+        var newSource = '';
+        walk.simple(ast, {
+            Expression: function (node) {
+                if (node.type === 'CallExpression' && node.callee.name === 'eval' && node.arguments.length > 0 && node.arguments[0].type === 'Literal') {
+                    var argument = node.arguments[0];
+                    var result = workerInlinify.inlinify(argument.value);
+                    if (result !== argument.value) {
+                        evalReplaceNodes.push(new EvalReplaceNode(argument.start + 1, argument.end - 1, result));
+                    }
+                }
+            }
+        });
+        // replace eval contents if needed
+        evalReplaceNodes.forEach(function (node, index) {
+            if (index === 0) {
+                newSource += source.substr(0, node.start);
+            }
+            else {
+                newSource += source.substring(evalReplaceNodes[index - 1].end, node.start);
+            }
+            newSource += node.replacement;
+            if (index === evalReplaceNodes.length - 1) {
+                newSource += source.substring(node.end);
+            }
+        });
+        if (evalReplaceNodes.length > 0) {
+            source = newSource;
+        }
+        // inlinify contents outside eval
         var workerRefs = this.findWorkerRefs(source);
         if (workerRefs.length === 0) {
             return source;
         }
-        var result = '';
+        newSource = '';
         var replaceNodes = [];
         workerRefs.forEach(function (workerRef) {
             var worker = path.join(_this.contextPath, workerRef.worker);
@@ -92,29 +132,29 @@ var workerInlinify = {
         });
         replaceNodes.forEach(function (node, index) {
             if (index === 0) {
-                result += source.substr(0, node.start);
+                newSource += source.substr(0, node.start);
             }
             else {
-                result += source.substring(replaceNodes[index - 1].end, node.start);
+                newSource += source.substring(replaceNodes[index - 1].end, node.start);
             }
-            result += 'window.URL.createObjectURL(';
+            newSource += 'window.URL.createObjectURL(';
             if (node.workerRef.refs.length > 1) {
-                result += node.workerRef.varname;
+                newSource += node.workerRef.varname;
             }
             else {
-                result += 'new Blob(["' + text2jsvar.convert(node.workerRef.script) + '"])';
+                newSource += 'new Blob(["' + text2jsvar.convert(node.workerRef.script) + '"])';
             }
-            result += ')';
+            newSource += ')';
             if (index === replaceNodes.length - 1) {
-                result += source.substring(node.end);
+                newSource += source.substring(node.end);
             }
         });
         workerRefs.forEach(function (workerRef) {
             if (workerRef.script && workerRef.refs.length > 1) {
-                result = "var " + workerRef.varname + "=new Blob([\"" + text2jsvar.convert(workerRef.script) + "\"]);\r\n" + result;
+                newSource = "var " + workerRef.varname + "=new Blob([\"" + text2jsvar.convert(workerRef.script) + "\"]);\r\n" + newSource;
             }
         });
-        return result;
+        return newSource;
     },
     inlinifyFile: function (file) {
         var filePath = path.join(this.contextPath, file);

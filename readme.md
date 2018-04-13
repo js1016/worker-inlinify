@@ -10,7 +10,7 @@ You can install it globally to use the CLI everywhere.
 npm install worker-inlinify -g
 ```
 
-Or just install within your project
+Or just install within your project.
 ```
 npm install worker-inlinify --save
 ```
@@ -65,7 +65,7 @@ You can use `worker-inlinify --loose` to overcome this, but it is not recommende
 ## workerInlinify.inlinify(source)
 Description: Inlinify the given source code.
 
-### Arguments
+#### Arguments
 <table>
     <tr>
         <th>Parameter</th>
@@ -75,17 +75,17 @@ Description: Inlinify the given source code.
     <tr>
         <td>source</td>
         <td>String</td>
-        <td>The script to be inlinified.</td>
+        <td>The source string to be inlinified.</td>
     </tr>
 </table>
 
-### Return value
-The converted script.
+#### Return value
+The inlinified script.
 
 ## workerInlinify.inlinifyFile(file)
 Description: Inlinify the given JS file, the file must have a "js" extension name.
 
-### Arguments
+#### Arguments
 <table>
     <tr>
         <th>Parameter</th>
@@ -99,17 +99,17 @@ Description: Inlinify the given JS file, the file must have a "js" extension nam
     </tr>
 </table>
 
-### Return value
-Not available, the JS file will be overwritten with the inlinified result.
+#### Return value
+No return value, the JS file will be overwritten with the inlinified result.
 
 ## workerInlinify.contextPath
 Description: The path where workerInlinify finds the external web worker scripts.
-
-### Defautl value: `process.cwd()`
+#### Type: String
+#### Defautl value: `process.cwd()`
 The default contextPath is the current node working directory. You can set to a custom path where workerInlinify can find the external web worker scripts.
 
 ## workerInlinify.useLoose
 Description: Whether to use an error-tolerant parser.
-
-### Default value: false
+#### Type: Boolean
+#### Default value: false
 The default value is false. If you encounter a `SyntaxError` when inlinifying the script, you may either fix the Syntax error in your script or set this value to true to solve it.

@@ -40,6 +40,17 @@ class ReplaceNode {
     }
 }
 
+class EvalReplaceNode {
+    public start: number;
+    public end: number;
+    public replacement: string;
+    constructor(start: number, end: number, replacement: string) {
+        this.start = start;
+        this.end = end;
+        this.replacement = text2jsvar.convert(replacement);
+    }
+}
+
 const workerInlinify = {
     contextPath: path.resolve(process.cwd()),
 
@@ -76,11 +87,43 @@ const workerInlinify = {
     },
 
     inlinify: function (source: string): string {
+        // start inlinify contents in eval
+        let ast = this.useLoose ? acornLoose.parse_dammit(source) : acorn.parse(source);
+        let evalReplaceNodes: EvalReplaceNode[] = [];
+        let newSource = '';
+        walk.simple(ast, {
+            Expression(node) {
+                if (node.type === 'CallExpression' && node.callee.name === 'eval' && node.arguments.length > 0 && node.arguments[0].type === 'Literal') {
+                    let argument = node.arguments[0];
+                    let result = workerInlinify.inlinify(argument.value);
+                    if (result !== argument.value) {
+                        evalReplaceNodes.push(new EvalReplaceNode(argument.start + 1, argument.end - 1, result));
+                    }
+                }
+            }
+        });
+        // replace eval contents if needed
+        evalReplaceNodes.forEach((node, index) => {
+            if (index === 0) {
+                newSource += source.substr(0, node.start);
+            } else {
+                newSource += source.substring(evalReplaceNodes[index - 1].end, node.start);
+            }
+            newSource += node.replacement;
+            if (index === evalReplaceNodes.length - 1) {
+                newSource += source.substring(node.end);
+            }
+        });
+        if (evalReplaceNodes.length > 0) {
+            source = newSource;
+        }
+
+        // inlinify contents outside eval
         let workerRefs: WorkerRefs[] = this.findWorkerRefs(source);
         if (workerRefs.length === 0) {
             return source;
         }
-        let result: string = '';
+        newSource = '';
         let replaceNodes: ReplaceNode[] = [];
         workerRefs.forEach(workerRef => {
             let worker = path.join(this.contextPath, workerRef.worker);
@@ -102,27 +145,27 @@ const workerInlinify = {
         });
         replaceNodes.forEach((node, index) => {
             if (index === 0) {
-                result += source.substr(0, node.start);
+                newSource += source.substr(0, node.start);
             } else {
-                result += source.substring(replaceNodes[index - 1].end, node.start);
+                newSource += source.substring(replaceNodes[index - 1].end, node.start);
             }
-            result += 'window.URL.createObjectURL(';
+            newSource += 'window.URL.createObjectURL(';
             if (node.workerRef.refs.length > 1) {
-                result += node.workerRef.varname;
+                newSource += node.workerRef.varname;
             } else {
-                result += 'new Blob(["' + text2jsvar.convert(node.workerRef.script) + '"])';
+                newSource += 'new Blob(["' + text2jsvar.convert(node.workerRef.script) + '"])';
             }
-            result += ')';
+            newSource += ')';
             if (index === replaceNodes.length - 1) {
-                result += source.substring(node.end);
+                newSource += source.substring(node.end);
             }
         });
         workerRefs.forEach(workerRef => {
             if (workerRef.script && workerRef.refs.length > 1) {
-                result = `var ${workerRef.varname}=new Blob(["${text2jsvar.convert(workerRef.script)}"]);\r\n` + result;
+                newSource = `var ${workerRef.varname}=new Blob(["${text2jsvar.convert(workerRef.script)}"]);\r\n` + newSource;
             }
         });
-        return result;
+        return newSource;
     },
 
     inlinifyFile: function (file: string): void {
