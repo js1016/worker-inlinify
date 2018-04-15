@@ -24,6 +24,7 @@ For example, you have following files in the __home__ directory.
    ```javascript
    var worker = new Worker('src/worker.js');
    var fakeWorker = new Worker('non-existing-worker.js');
+   eval('new Worker("src/worker.js")');
    ```
 
 2. home/src/worker.js
@@ -39,6 +40,7 @@ After running `worker_inlinify` command in __home__ directory, the __main.js__ w
 ```javascript
 var worker = new Worker(window.URL.createObjectURL(new Blob(["(function(){\r\n    console.log(\'Hi from worker.js\');\r\n})();"])));
 var fakeWorker = new Worker('non-existing-worker.js');
+eval('new Worker(window.URL.createObjectURL(new Blob([\"(function(){\\r\\n    console.log(\\\'Hi from worker.js\\\');\\r\\n})();\"])))');
 ```
 
 If you don't want to install it globally, __worker-inlinify__ is also available from npm scripts, you can define it in a custom script like below in your __package.json__.

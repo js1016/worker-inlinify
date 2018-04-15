@@ -52,6 +52,8 @@ class EvalReplaceNode {
 }
 
 const workerInlinify = {
+    _webpackAssets: null,
+
     contextPath: path.resolve(process.cwd()),
 
     useLoose: false,
@@ -127,10 +129,16 @@ const workerInlinify = {
         let replaceNodes: ReplaceNode[] = [];
         workerRefs.forEach(workerRef => {
             let worker = path.join(this.contextPath, workerRef.worker);
-            if (fs.existsSync(worker)) {
+            if (workerInlinify._webpackAssets !== null && workerRef.worker in workerInlinify._webpackAssets) {
+                // find the worker script in webpack assets
+                workerRef.script = workerInlinify._webpackAssets[workerRef.worker].source();
+            } else if (fs.existsSync(worker)) {
+                // find the resource in file system
                 workerRef.script = fs.readFileSync(worker).toString();
+            }
+            if (workerRef.script !== undefined) {
                 workerRef.varname = getWorkerVarName(source);
-                workerRef.refs.forEach(ref => {
+                workerRef.refs.forEach(function (ref) {
                     replaceNodes.push(new ReplaceNode(ref.start, ref.end, workerRef));
                 });
             }
@@ -206,4 +214,3 @@ function findLeftLiteralNode(node) {
 }
 
 export = workerInlinify;
-

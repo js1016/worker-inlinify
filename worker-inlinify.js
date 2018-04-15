@@ -40,6 +40,7 @@ var EvalReplaceNode = /** @class */ (function () {
     return EvalReplaceNode;
 }());
 var workerInlinify = {
+    _webpackAssets: null,
     contextPath: path.resolve(process.cwd()),
     useLoose: false,
     findWorkerRefs: function (source) {
@@ -114,8 +115,15 @@ var workerInlinify = {
         var replaceNodes = [];
         workerRefs.forEach(function (workerRef) {
             var worker = path.join(_this.contextPath, workerRef.worker);
-            if (fs.existsSync(worker)) {
+            if (workerInlinify._webpackAssets !== null && workerRef.worker in workerInlinify._webpackAssets) {
+                // find the worker script in webpack assets
+                workerRef.script = workerInlinify._webpackAssets[workerRef.worker].source();
+            }
+            else if (fs.existsSync(worker)) {
+                // find the resource in file system
                 workerRef.script = fs.readFileSync(worker).toString();
+            }
+            if (workerRef.script !== undefined) {
                 workerRef.varname = getWorkerVarName(source);
                 workerRef.refs.forEach(function (ref) {
                     replaceNodes.push(new ReplaceNode(ref.start, ref.end, workerRef));

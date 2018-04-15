@@ -1,0 +1,2 @@
+eval("var a = new Worker(\'worker.js\');\nvar b = new Worker(\'worker.js?i=\' + new Date().getTime() + \'&v=latest\');\nvar c = new Worker(\'fake-worker.js\');\neval(\'new Worker(\"worker.js\");new Worker(\"worker.js?i=\"+new Date().getTime());new Worker(\"fake-worker.js\");\');");
+eval('var a = new Worker(\'worker.js\');\nvar b = new Worker(\'worker.js?i=\' + new Date().getTime() + \'&v=latest\');\nvar c = new Worker(\'fake-worker.js\');\neval(\'new Worker(\"worker.js\");new Worker(\"worker.js?i=\"+new Date().getTime());new Worker(\"fake-worker.js\");\');');
