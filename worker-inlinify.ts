@@ -129,9 +129,11 @@ const workerInlinify = {
         let replaceNodes: ReplaceNode[] = [];
         workerRefs.forEach(workerRef => {
             let worker = path.join(this.contextPath, workerRef.worker);
-            if (workerInlinify._webpackAssets !== null && workerRef.worker in workerInlinify._webpackAssets) {
+            if (workerInlinify._webpackAssets !== null) {
                 // find the worker script in webpack assets
-                workerRef.script = workerInlinify._webpackAssets[workerRef.worker].source();
+                if (workerRef.worker in workerInlinify._webpackAssets) {
+                    workerRef.script = workerInlinify._webpackAssets[workerRef.worker].source();
+                }
             } else if (fs.existsSync(worker)) {
                 // find the resource in file system
                 workerRef.script = fs.readFileSync(worker).toString();

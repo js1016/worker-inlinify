@@ -2,8 +2,7 @@
 const fs = require('fs');
 const workerInlinify = require('../worker-inlinify');
 const path = require('path');
-const contextPath = process.cwd();
-const files = fs.readdirSync(contextPath);
+const files = fs.readdirSync(process.cwd());
 
 process.argv.forEach(arg => {
     switch (arg.toLowerCase()) {
