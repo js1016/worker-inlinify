@@ -20,14 +20,14 @@
   "author": "Sheng Jiang",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^9.4.7",
-    "chai": "^4.1.2",
+    "@types/node": "^9.6.56",
+    "chai": "^4.2.0",
     "intelli-espower-loader": "^1.0.1",
-    "mocha": "^5.0.5",
-    "power-assert": "^1.4.4"
+    "mocha": "^5.2.0",
+    "power-assert": "^1.6.1"
   },
   "dependencies": {
-    "acorn": "^5.5.3",
+    "acorn": "^5.7.4",
     "text2jsvar": "^1.2.1"
   },
   "bin": {
