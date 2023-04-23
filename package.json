@@ -23,7 +23,7 @@
     "@types/node": "^9.6.56",
     "chai": "^4.2.0",
     "intelli-espower-loader": "^1.0.1",
-    "mocha": "^5.2.0",
+    "mocha": "^10.2.0",
     "power-assert": "^1.6.1"
   },
   "dependencies": {
